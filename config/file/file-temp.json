@@ -1,0 +1,7 @@
+{
+    "datetime": 1542160060686,
+    "index": 17,
+    "sence": "Main",
+    "custom": {},
+    "content": "<div id=\"Main\" class=\"scene \" style=\"display: block;\"><img name=\"miaomiao1\" src=\"./scenes/images/yjsly.png\" class=\"avg-animation-fadein\" style=\"top:0px;left:100px;\" id=\"miaomiao1\"><img name=\"miaomiao2\" src=\"./scenes/images/yjsly.png\" class=\"avg-animation-fadein\" style=\"top: 0px; left: 400px; height: 300px;\" id=\"miaomiao2\"><img name=\"miaomiao3\" src=\"./scenes/images/yjsly.png\" class=\"avg-animation-bouncein avg-animation-swing\" style=\"top:0px;left:400px;\" id=\"miaomiao3\"></div>"
+}

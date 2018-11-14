@@ -1,0 +1,497 @@
+/* reset */
+
+html, body, h1, h2, h3, h4, h5, h6, div, dl, dt, dd, ul, ol, li, p, blockquote, pre, hr, figure, table, caption, th, td, form, fieldset, legend, input, button, textarea, menu {
+  margin: 0;
+  padding: 0;
+}
+
+header, footer, section, article, aside, nav, hgroup, address, figure, figcaption, menu, details {
+  display: block;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+caption, th {
+  text-align: left;
+  font-weight: normal;
+}
+
+html, body, fieldset, img, iframe, abbr {
+  border: 0;
+}
+
+i, cite, em, var, address, dfn {
+  font-style: normal;
+}
+
+[hidefocus], summary {
+  outline: 0;
+}
+
+li {
+  list-style: none;
+}
+
+h1, h2, h3, h4, h5, h6, small {
+  font-size: 100%;
+}
+
+sup, sub {
+  font-size: 83%;
+}
+
+pre, code, kbd, samp {
+  font-family: inherit;
+}
+
+q:before, q:after {
+  content: none;
+}
+
+textarea {
+  overflow: auto;
+  resize: none;
+}
+
+label, summary {
+  cursor: default;
+}
+
+a, button {
+  cursor: pointer;
+}
+
+h1, h2, h3, h4, h5, h6, em, strong, b {
+  font-weight: bold;
+}
+
+del, ins, u, s, a, a:hover {
+  text-decoration: none;
+}
+
+body, textarea, input, button, select, keygen, legend {
+  font: 12px/1.14 arial, \5b8b\4f53;
+  color: #333;
+  outline: 0;
+}
+
+body {
+  background: #fff;
+}
+
+a, a:hover {
+  color: #333;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  overflow: hidden;
+}
+
+body,div,li,span,button,p{
+  -moz-user-select:none;/*火狐*/
+  -webkit-user-select:none;/*webkit浏览器*/
+  -ms-user-select:none;/*IE10*/
+  -khtml-user-select:none;/*早期浏览器*/
+  user-select:none;
+}
+/* switch bar */
+
+.switch {
+  margin: 10px auto;
+  position: relative;
+}
+
+.switch label {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: block;
+}
+
+.switch input {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  opacity: 0;
+  z-index: 100;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.switch.bar {
+  width: 80px;
+  height: 20px;
+}
+
+.switch.bar label {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #a5a39d;
+  border-radius: 40px;
+  box-shadow: inset 0 3px 8px 1px rgba(0, 0, 0, 0.2), 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.switch.bar label:after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -8px;
+  right: -8px;
+  bottom: -8px;
+  left: -8px;
+  border-radius: inherit;
+  background: #ababab;
+  background: -moz-linear-gradient(#f2f2f2, #ababab);
+  background: -ms-linear-gradient(#f2f2f2, #ababab);
+  background: -o-linear-gradient(#f2f2f2, #ababab);
+  background: -webkit-gradient(linear, 0 0, 0 100%, from(#f2f2f2), to(#ababab));
+  background: -webkit-linear-gradient(#f2f2f2, #ababab);
+  background: linear-gradient(#f2f2f2, #ababab);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3), 0 1px 1px rgba(0, 0, 0, 0.25);
+}
+
+.switch.bar label:before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -18px;
+  right: -18px;
+  bottom: -18px;
+  left: -18px;
+  border-radius: inherit;
+  background: #eee;
+  background: -moz-linear-gradient(#e5e7e6, #eee);
+  background: -ms-linear-gradient(#e5e7e6, #eee);
+  background: -o-linear-gradient(#e5e7e6, #eee);
+  background: -webkit-gradient(linear, 0 0, 0 100%, from(#e5e7e6), to(#eee));
+  background: -webkit-linear-gradient(#e5e7e6, #eee);
+  background: linear-gradient(#e5e7e6, #eee);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  -webkit-filter: blur(1px);
+  -moz-filter: blur(1px);
+  -ms-filter: blur(1px);
+  -o-filter: blur(1px);
+  filter: blur(1px);
+}
+
+.switch.bar label i {
+  display: block;
+  height: 100%;
+  width: 60%;
+  border-radius: inherit;
+  background: silver;
+  position: absolute;
+  z-index: 2;
+  right: 40%;
+  top: 0;
+  background: #b2ac9e;
+  background: -moz-linear-gradient(#f7f2f6, #b2ac9e);
+  background: -ms-linear-gradient(#f7f2f6, #b2ac9e);
+  background: -o-linear-gradient(#f7f2f6, #b2ac9e);
+  background: -webkit-gradient(linear, 0 0, 0 100%, from(#f7f2f6), to(#b2ac9e));
+  background: -webkit-linear-gradient(#f7f2f6, #b2ac9e);
+  background: linear-gradient(#f7f2f6, #b2ac9e);
+  box-shadow: inset 0 1px 0 white, 0 0 8px rgba(0, 0, 0, 0.3), 0 5px 5px rgba(0, 0, 0, 0.2);
+}
+
+.switch.bar label i:after {
+  content: "";
+  position: absolute;
+  left: 15%;
+  top: 25%;
+  width: 70%;
+  height: 50%;
+  background: #d2cbc3;
+  background: -moz-linear-gradient(#cbc7bc, #d2cbc3);
+  background: -ms-linear-gradient(#cbc7bc, #d2cbc3);
+  background: -o-linear-gradient(#cbc7bc, #d2cbc3);
+  background: -webkit-gradient(linear, 0 0, 0 100%, from(#cbc7bc), to(#d2cbc3));
+  background: -webkit-linear-gradient(#cbc7bc, #d2cbc3);
+  background: linear-gradient(#cbc7bc, #d2cbc3);
+  border-radius: inherit;
+}
+
+.switch.bar label i:before {
+  content: "关";
+  text-transform: uppercase;
+  font-style: normal;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.4);
+  text-shadow: 0 1px 0 #bcb8ae, 0 -1px 0 #97958e;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 10px;
+  position: absolute;
+  top: 50%;
+  margin-top: -4px;
+  right: -40%;
+}
+
+.switch.bar input:checked~label {
+  background: #9abb82;
+}
+
+.switch.bar input:checked~label i {
+  right: -1%;
+}
+
+.switch.bar input:checked~label i:before {
+  content: "开";
+  right: 115%;
+  color: #82a06a;
+  text-shadow: 0 1px 0 #afcb9b, 0 -1px 0 #6b8659;
+}
+
+/* start da css for da buttons */
+
+.btn {
+  border-radius: 5px;
+  padding: 10px 10px;
+  font-size: 20px;
+  width: 100px;
+  text-decoration: none;
+  margin: 20px;
+  color: #eee;
+  position: relative;
+  display: inline-block;
+  border: none;
+}
+
+.btn:active {
+  transform: translate(0px, 5px);
+  -webkit-transform: translate(0px, 5px);
+  box-shadow: 0px 1px 0px 0px;
+}
+
+.blue {
+  background-color: #55acee;
+  box-shadow: 0px 5px 0px 0px #3C93D5;
+}
+
+.blue:hover {
+  background-color: #6FC6FF;
+}
+
+.green {
+  background-color: #2ecc71;
+  box-shadow: 0px 5px 0px 0px #15B358;
+}
+
+.green:hover {
+  background-color: #48E68B;
+}
+
+.red {
+  background-color: #e74c3c;
+  box-shadow: 0px 5px 0px 0px #CE3323;
+}
+
+.red:hover {
+  background-color: #FF6656;
+}
+
+.purple {
+  background-color: #9b59b6;
+  box-shadow: 0px 5px 0px 0px #82409D;
+}
+
+.purple:hover {
+  background-color: #B573D0;
+}
+
+.orange {
+  background-color: #e67e22;
+  box-shadow: 0px 5px 0px 0px #CD6509;
+}
+
+.orange:hover {
+  background-color: #FF983C;
+}
+
+.yellow {
+  background-color: #f1c40f;
+  box-shadow: 0px 5px 0px 0px #D8AB00;
+}
+
+.yellow:hover {
+  background-color: #FFDE29;
+}
+
+.avg-layer {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding-top: 100px;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.avg-layer .wrap {
+  background: -webkit-radial-gradient(#fabc4d, #eb7e15 70%) no-repeat #eb7e15;
+  background: radial-gradient(#fabc4d, #eb7e15 70%) no-repeat #eb7e15;
+  position: relative;
+  width: 800px;
+  margin: 0 auto;
+  border: 5px solid rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* 显示 */
+
+.avg-layer.z-show {
+  display: block;
+  z-index: 999;
+}
+
+
+/* 1 */
+
+#MainPanel, #ChooseDialogPanel, #SettingPanel, #AboutPanel, #FilePanel, #ScenePanel {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+}
+
+#MainPanel {
+  z-index: 1;
+}
+
+#MainPanel>.BackgroundImage {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#MainPanel>#LogoPanel {
+  z-index: 9;
+  position: absolute;
+  top: 5%;
+  left: 60px;
+  width: 80%;
+  height: 100%;
+}
+
+#MainPanel>#ButtonPanel {
+  padding: 10px;
+  position: absolute;
+  bottom: 50px;
+  right: 10px;
+  height: 400px;
+  width: 400px;
+  z-index: 48;
+  text-align: center
+}
+
+#MainPanel>#ButtonPanel>button {
+  margin-top: 10px;
+  width: 200px;
+  display: inline-block;
+}
+
+#ScenePanel {
+  z-index: 7;
+  background: #333;
+  display: none;
+}
+
+#ScenePanel>#ClickPanel {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  z-index: 997;
+}
+
+#ScenePanel>img {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+}
+
+#SceneDialog {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  width: 100%;
+  z-index: 8;
+  display: none;
+}
+
+#SceneDialog>#ActorDialog {
+  background: rgba(0, 0, 0, 0.8);
+  height: 200px;
+  padding: 10px 20px;
+  color: #fff;
+  z-index: 1;
+}
+
+#SceneDialog>#SceneMenu {
+  position: absolute;
+  text-align: right;
+  display: inline;
+  right: 100px;
+  top: 0px;
+  z-index: 9;
+}
+
+#SceneDialog>#SceneMenu button {
+  padding: 10px 20px;
+}
+
+#ChooseDialogPanel {
+  background: rgba(0, 0, 0, 0.5);
+  z-index:99;
+}
+
+.scene {
+  position: relative;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  text-align: center;
+  display: none;
+}
+
+.scene>img {
+  position: absolute;
+  z-index: 99;
+}
+
+.scene>.bg {
+  z-index: 99;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+}
+
+.scene>.button-panel {
+  position: absolute;
+  z-index: 100;
+  bottom: 20%;
+  left: 30%;
+  width: 300px;
+}

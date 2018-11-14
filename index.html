@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="./avgengine/style/animation.css">
+    <link rel="stylesheet" href="./avgengine/style/avgengine.css">
+    <link rel="stylesheet" href="./avgengine/templ/simple/css/style.css">
+    <script src="./avgengine/js/avgengine.pc.js"></script>
+    <script>
+        $(function () {
+            AVGEngine.Init();
+        });
+    </script>
+</head>
+
+<body>
+
+    <div id="ScenePanel">
+        <div id="ClickPanel"></div>
+    </div>
+
+    <div id="SceneDialog">
+        <div id="SceneMenu">
+            <button onclick="AVGEngine.SaveTempFile();">快速保存</button>
+            <button onclick="AVGEngine.ShowPanel('FilePanel');">存档</button>
+            <button onclick="AVGEngine.ShowPanel('FilePanel');">读档</button>
+            <button onclick="AVGEngine.ShowPanel('SettingPanel');">设置</button>
+            <button onclick="AVGEngine.ShowPanel('FilePanel');">自动</button>
+            <button onclick="AVGEngine.Quit()">退出</button>
+        </div>
+        <div id="ActorDialog">
+            <p></p>
+            <p></p>
+        </div>
+    </div>
+
+    <div id="ChooseDialogPanel" class="avg-layer"></div>
+
+    <div id="SettingPanel" class="avg-layer">
+
+        <article class="wrap" style="padding:50px 10px;">
+            <header>
+                <h2 style="text-align: center;font-size: 36px;">游戏设置</h2>
+            </header>
+            <div style="margin-top:20px;">
+                <div style="width:45%;line-height:40px;display:inline-block;text-align: right;font-size: 24px;display:inline-block;*zoom:1;*display:inline;margin:10px;vertical-align:bottom;">
+                    音效
+                </div>
+                <div style="width:45%;display:inline-block;text-align: left;display:inline-block;*zoom:1;*display:inline;margin:10px;vertical-align:bottom;">
+                    <div class="switch bar" style="float:left;">
+                        <input id="SoundSwitch" type="checkbox" class="sound-switch">
+                        <label>
+                            <i></i>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div style="width:45%;line-height:40px;display:inline-block;text-align: right;font-size: 24px;*zoom:1;*display:inline;margin:10px;vertical-align:bottom;">
+                    背景音乐
+                </div>
+                <div style="width:45%;display:inline-block;*zoom:1;*display:inline;margin:10px;vertical-align:bottom;">
+                    <div class="switch bar" style="float:left;">
+                        <input id="MusicSwitch" type="checkbox" class="music-switch">
+                        <label>
+                            <i></i>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div style="width:45%;line-height:40px;display:inline-block;text-align: right;font-size: 24px;*zoom:1;*display:inline;margin:10px;vertical-align:bottom;">
+                    音效音量
+                </div>
+                <div style="width:45%;display:inline-block;*zoom:1;*display:inline;margin:10px;vertical-align:bottom;">
+                    <input id="SoundVolume" name="SoundVolume" type="range" placeholder="0 - 100" type="number" min="0" max="100" step="10" value="40"
+                        data-color="#12C7AC" class="srs">
+                </div>
+            </div>
+            <div>
+                <div style="width:45%;line-height:40px;display:inline-block;text-align: right;font-size: 24px;*zoom:1;*display:inline;margin:10px;vertical-align:bottom;">
+                    背景音乐音量
+                </div>
+                <div style="width:45%;display:inline-block;*zoom:1;*display:inline;margin:10px;vertical-align:bottom;">
+                    <input id="BGMVolume" name="BGMVolume" type="range" placeholder="0 - 100" type="number" min="0" max="100" step="10" value="40"
+                        data-color="#12C7AC" class="srs">
+                </div>
+            </div>
+            <div>
+                <div style="width:45%;line-height:40px;display:inline-block;text-align: right;font-size: 24px;*zoom:1;*display:inline;margin:10px;vertical-align:bottom;">
+                    文字弹出速度
+                </div>
+                <div style="width:45%;display:inline-block;*zoom:1;*display:inline;margin:10px;vertical-align:bottom;">
+                    <input id="AutoSpeed" name="AutoSpeed" type="range" placeholder="0 - 100" type="number" min="0" max="100" step="10" value="40"
+                        data-color="#12C7AC" class="srs">
+                </div>
+            </div>
+            <div>
+                <div style="line-height:40px;text-align:center;">
+                    <button type="button" class="btn green" onclick="AVGEngine.SaveSetting();AVGEngine.HidePanel('SettingPanel');">保存</button>
+                    <button type="button" class="btn green" onclick="AVGEngine.HidePanel('SettingPanel');">取消</button>
+                </div>
+            </div>
+        </article>
+    </div>
+
+    <div id="AboutPanel"></div>
+
+    <div id="FilePanel" class="avg-layer">
+
+        <article class="wrap" style="padding:50px 10px;">
+            <header>
+                <h2 style="text-align: center;font-size: 36px;">游戏存档</h2>
+            </header>
+
+            <div>
+                <div style="line-height:40px;text-align:center;">
+                    <button type="button" class="btn green" onclick="AVGEngine.HidePanel('FilePanel');">取消</button>
+                </div>
+            </div>
+        </article>
+
+    </div>
+
+    <div id="MainPanel" class="">
+        <img src="./avgengine/templ/simple/images/BG000d.bmp" alt="" class="BackgroundImage">
+        <div id="LogoPanel">
+            <span class="letter" data-letter="我">我</span>
+            <span class="letter" data-letter="的">的</span>
+            <span class="letter" data-letter="妖">妖</span>
+            <span class="letter" data-letter="狐">狐</span>
+            <span class="letter" data-letter="妹">妹</span>
+            <span class="letter" data-letter="妹">妹</span>
+        </div>
+
+        <div id="ButtonPanel">
+            <button onclick="AVGEngine.Continue();" class="btn green">继续游戏</button>
+            <button onclick="AVGEngine.NewGame('Main','');" class="btn green">新游戏</button>
+            <button onclick="AVGEngine.ShowPanel('FilePanel');" class="btn green">读取存档</button>
+            <button onclick="AVGEngine.ShowPanel('SettingPanel');" class="btn green">游戏设置</button>
+            <button onclick="AVGEngine.ShowPanel('AboutPanel');" class="btn green">关于我们</button>
+            <button onclick="AVGEngine.Quit()" class="btn green">退出游戏</button>
+        </div>
+    </div>
+</body>
+
+</html>

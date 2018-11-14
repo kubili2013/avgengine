@@ -1,0 +1,14 @@
+{
+    "Width": 1920,
+    "Height": 1080,
+    "BGM": false,
+    "Sound": false,
+    "BGMVolume": "40",
+    "SoundVolume": "40",
+    "AutoPlay": false,
+    "AutoSpeed": "40",
+    "Develop": true,
+    "Debug": true,
+    "Language": "zh_CN",
+    "DefaultBGM": "bg.mp3"
+}
