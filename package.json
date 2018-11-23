@@ -4,7 +4,8 @@
   "description": "使用前端技术，快速开发文字冒险游戏的引擎。",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "asar": "asar pack ./ app.asar"
   },
   "repository": "https://github.com/electron/electron-quick-start",
   "keywords": [
@@ -13,9 +14,9 @@
   "author": "GitHub",
   "license": "CC0-1.0",
   "devDependencies": {
+    "asar": "^0.14.5",
     "electron": "^2.0.0",
     "electron-rebuild": "^1.8.2"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }

@@ -2,13 +2,13 @@
     "Width": 1920,
     "Height": 1080,
     "BGM": false,
-    "Sound": false,
-    "BGMVolume": "40",
-    "SoundVolume": "40",
+    "Sound": true,
+    "BGMVolume": "30",
+    "SoundVolume": "30",
     "AutoPlay": false,
-    "AutoSpeed": "40",
+    "AutoSpeed": "50",
     "Develop": true,
     "Debug": true,
     "Language": "zh_CN",
-    "DefaultBGM": "bg.mp3"
+    "DefaultBGM": "CR2_Beautiful_Day_FULL_Loop.wav"
 }

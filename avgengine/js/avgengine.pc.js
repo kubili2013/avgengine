@@ -9,11 +9,18 @@ const { ipcRenderer } = require('electron')
 const swal = require(path.join(__dirname,'./avgengine/js/sweetalert2.min.js'))
 const Toast = swal.mixin({
     toast: true,
-    position: 'center',
+    position: 'top-end',
     showConfirmButton: false,
     customClass: "sweetalert-custom-toast",
     timer: 3000
 });
+
+// 替换全部
+String.prototype.replaceAll=function(f,e){
+    var reg=new RegExp(f,"ig")
+    return this.replace(reg,e)
+}
+
 // 引入 Steam Works
 var greenworks = require(path.join(__dirname,'./avgengine/js/greenworks.js'))
 var AVGEngine = {
@@ -30,7 +37,7 @@ var AVGEngine = {
         Develop: true,
         Debug: true,
         Language: 'zh_CN',
-        DefaultBGM: "bg.mp3"
+        DefaultBGM: "CR2_Beautiful_Day_FULL_Loop.wav"
     },
     TempContent:"",
     Files: [],
@@ -40,8 +47,8 @@ var AVGEngine = {
         CountInit: function () {
             AVGEngine.Time.Count = 1 + AVGEngine.Time.Count
             AVGEngine.Time.That = setTimeout("AVGEngine.Time.CountInit()", 1000)
-            if (AVGEngine.Setting.Debug)
-                AVGEngine.Log("Timer:" + AVGEngine.Time.Count)
+            
+            AVGEngine.Log("Timer:" + AVGEngine.Time.Count)
             // 每当20秒自动保存一次
             if(AVGEngine.Time.Count % 10 == 0 && $('.scene').length > 0){
                 AVGEngine.AutoSave()
@@ -55,11 +62,14 @@ var AVGEngine = {
     Init: function () {
         try {
             if (!greenworks.init()) {
-                if (AVGEngine.Setting.Debug)
-                    this.Log('加载 Steam Works 失败！')
+                AVGEngine.Log('加载 SteamWorks 失败！')
+                AVGEngine.Toast({type:"error",title:" SteamWorks 加载失败！"})
             }
 
-        } catch (e) { console.log(e) }
+        } catch (e) { 
+            console.log(e) 
+            AVGEngine.Toast({type:"error",title:" SteamWorks 加载失败！"}) 
+        }
         if (AVGEngine.Time.That == null) {
             // 计时器 只能执行一次
             AVGEngine.Time.CountInit()
@@ -81,7 +91,7 @@ var AVGEngine = {
         if (AVGEngine.Setting.BGM) {
             AVGEngine.BGM.Play()
         }
-
+        
         $('.music-switch').click(function () {
             AVGEngine.Setting.BGM = !AVGEngine.Setting.BGM
             $('.music-switch').addClass(AVGEngine.Setting.BGM ? "open" : "close")
@@ -106,7 +116,7 @@ var AVGEngine = {
             AVGEngine.Setting.AutoSpeed = this.value
         })
 
-
+        
         $('.sound-switch').click(function () {
             AVGEngine.Setting.Sound = !AVGEngine.Setting.Sound
             $('.music-switch').addClass(AVGEngine.Setting.Sound ? "open" : "close")
@@ -115,7 +125,28 @@ var AVGEngine = {
         $('#ClickPanel, #ActorDialog').click(function(){
             AVGEngine.Next();
         })
-
+        // 
+        $(document).keypress(function(e) {
+        　　if (e.which == 32 && !$("#ScenePanel").is(":hidden") && $("#ScenePanel").css("display") != 'none'){
+    　　        AVGEngine.Next()
+                return false
+            }
+        })
+        // 旁白 点击隐藏自己
+        $('#AsidePanel').click(function(){
+            AVGEngine.HidePanel('AsidePanel')
+            AVGEngine.NextFlag = true
+        })
+        
+    },
+    Animate: function (id, animation) {
+        $("#" + id).removeClass()
+        if (typeof animation == 'string') {
+            $("#" + id).addClass("avg-animation-" + animation)
+            setTimeout('$("#' + id + '").removeClass("avg-animation-' + animation + '")',1000)
+        } else if (typeof animation == 'object') {
+            $("#" + id).animate(animation);
+        }
     },
     // 解锁 Steam 成就
     ActivateAchievement: function (Achievement) {
@@ -123,6 +154,7 @@ var AVGEngine = {
             if (!greenworks.init()) {
                 if (AVGEngine.Setting.Debug)
                     this.Log('加载 Steam Works 失败！')
+                AVGEngine.Toast({type:"error",title:" SteamWorks 加载失败！"})
             }
             greenworks.activateAchievement(Achievement, function () { AVGEngine.Log(Achievement + " is Success") }, function (err) { AVGEngine.Log('NEW_ACHIEVEMENT_0_4 Failed:' + err); })
         } catch (e) { console.log(e) }
@@ -144,61 +176,77 @@ var AVGEngine = {
         try {
             fs.writeFile(AVGEngine.LocalPath() + '/config/setting.json', JSON.stringify(this.Setting, null, 4), function (err) {
                 if (err) {
-                    if (AVGEngine.Setting.Debug)
-                        AVGEngine.Log(err)
+                    AVGEngine.Log(err)
                 } else {
-                    if (AVGEngine.Setting.Debug)
-                        AVGEngine.Log("游戏设置保存成功！")
+                    AVGEngine.Log("游戏设置保存成功！")
+                    AVGEngine.Toast({type:"success",title:"游戏设置保存成功！"})
                 }
             })
         } catch (e) {
             AVGEngine.Log("游戏设置保存失败！")
+            AVGEngine.Toast({type:"success",title:"游戏设置保存失败！原因未知"})
         }
     },
     /** SceneName 名称 Animation 加载或隐藏的动画 */
     NewGame: function (SceneName, animation) {
-        this.Scenes.Change(SceneName, animation, "AVGEngine.Next");
+        // 清空
+        $('.scene').remove()
+        AVGEngine.Scenes.Change(SceneName, animation, "AVGEngine.Next");
     },
     Continue: function (index) {
+        $('.scene').remove()
         try {
+            let file ;
             if(index == undefined){
-                index = "temp"
+                file = fs.readFileSync(AVGEngine.LocalPath() + '/config/file/file-temp.json')
+                file = JSON.parse(file)
+                AVGEngine.TempContent = fs.readFileSync(AVGEngine.LocalPath() + '/config/file/content/content-temp.txt')
+            }else{
+                file = AVGEngine.Files[index]
+                // file = JSON.parse(file)
+                AVGEngine.TempContent = fs.readFileSync(AVGEngine.LocalPath() + '/config/file/content/' + file.filename.substr(0,file.filename.length-5) + '.txt')
+            
             }
-            AVGEngine.TempContent = fs.readFileSync(AVGEngine.LocalPath() + '/config/file/content/content-' +index+ '.txt')
-            let file = fs.readFileSync(AVGEngine.LocalPath() + '/config/file/file-' + index + '.json')
-            file = JSON.parse(file)
-            AVGEngine.Scenes.CurrentScene = file.sence
+            AVGEngine.Scenes.CurrentScene = file.scene
             AVGEngine.Scenes.Current = file.index - 1
+            AVGEngine.Scenes.Name = file.name
             AVGEngine.Custom = file.custom
-            $('#ScenePanel').show()
+            AVGEngine.ShowPanel('ScenePanel')
             $('#ScenePanel').append(file.content + "<script>$('#" + AVGEngine.Scenes.CurrentScene + "').show(100,function(){AVGEngine.Scenes.LoadList(AVGEngine.Scenes.GetSceneByName('" 
             + AVGEngine.Scenes.CurrentScene + "'),"
             + AVGEngine.Scenes.Current + ",AVGEngine.Next)});</script>")
-            // AVGEngine.Scenes.Change(file.sence,"","AVGEngine.Next")
+            // AVGEngine.Scenes.Change(file.scene,"","AVGEngine.Next")
         } catch (e) {
+            AVGEngine.Log(e)
+            AVGEngine.Toast({type:"info",title:"没有临时游戏内容，游戏将从头开始！"})
             AVGEngine.NewGame('Main', '', AVGEngine.Next)
         }
         
     },
     ShowPanel: function (id, animation) {
-        let anima = arguments[1] ? arguments[1] : 'avg-animation-fadeinL'
-        $('#' + id + " > article").addClass(anima)
-        $('#' + id).addClass('z-show')
+        // let anima = arguments[1] ? arguments[1] : 'avg-animation-fadeinL'
+        // $('#' + id + " > article").addClass(anima)
+        // $('#' + id).addClass('z-show')
+        $('#' + id).fadeIn(500, function() {
+            
+        });
     },
     HidePanel: function (id, animation) {
-        let anima = arguments[1] ? arguments[1] : 'avg-animation-fadeoutR'
-        $('#' + id + " > article").addClass(anima)
-        setTimeout("$('#" + id + "').removeClass('z-show'); $('#" + id + " > article').removeClass('" + anima + "');", 300)
+        // let anima = arguments[1] ? arguments[1] : 'avg-animation-fadeoutR'
+        // $('#' + id + " > article").addClass(anima)
+        // $('#'+ id ).removeClass('z-show');
+        $('#' + id).fadeOut(500, function() {
+            $('#' + id).hide()
+        });
+        // setTimeout("$('#" + id + "').removeClass('z-show'); $('#" + id + " > article').removeClass('" + anima + "');", 300)
     },
     SaveTempContent:function(){
         try {
             fs.writeFile(AVGEngine.LocalPath() + '/config/file/content/content-temp.txt', AVGEngine.TempContent , function (err) {
                 if (err) {
-                    if (AVGEngine.Setting.Debug)
-                        AVGEngine.Log(err)
+                    AVGEngine.Log(err)
                 } else {
-                    if (AVGEngine.Setting.Debug)
-                        AVGEngine.Log("临时内容保存成功！")
+                    AVGEngine.Log("临时内容保存成功！")
                 }
             })
         } catch (e) {
@@ -210,53 +258,57 @@ var AVGEngine = {
             let data = fs.readFileSync(AVGEngine.LocalPath() + '/config/file/file-temp.json')
             data = JSON.parse(data)
             data.datetime = (new Date()).valueOf()
-            data.sence = AVGEngine.Scenes.CurrentScene
+            data.name = AVGEngine.Scenes.Name
+            data.scene = AVGEngine.Scenes.CurrentScene
             data.index = AVGEngine.Scenes.Current
             data.content = $("#" + AVGEngine.Scenes.CurrentScene).prop("outerHTML")
+            data.content = data.content.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi , "");
             data.custom = AVGEngine.Custom
             fs.writeFile(AVGEngine.LocalPath() + '/config/file/file-temp.json', JSON.stringify(data, null, 4), function (err) {
                 if (err) {
-                    if (AVGEngine.Setting.Debug)
-                        AVGEngine.Log(err)
+                    AVGEngine.Log(err)
                 } else {
-                    if (AVGEngine.Setting.Debug)
-                        AVGEngine.Log("临时存档保存成功！")
+                    AVGEngine.Log("临时存档保存成功！")
+                    // AVGEngine.Toast({type:"success",title:"临时存档保存成功！"})
                 }
             })
 
         } catch (e) {
             let file = {
                 datetime:(new Date()).valueOf(),
-                sence:AVGEngine.Scenes.CurrentScene,
+                scene:AVGEngine.Scenes.CurrentScene,
                 index:AVGEngine.Scenes.Current
             }
             fs.writeFile(AVGEngine.LocalPath() + '/config/file/file-temp.json', JSON.stringify(file, null, 4), function (err) {
                 if (err) {
-                    if (AVGEngine.Setting.Debug)
-                        AVGEngine.Log(err)
+                    AVGEngine.Log(err)
                 } else {
-                    if (AVGEngine.Setting.Debug)
-                        AVGEngine.Log("临时存档保存成功！")
+                    AVGEngine.Log("临时存档保存成功！")
+                    AVGEngine.Toast({type:"success",title:"临时存档保存成功！"})
                 }
             })
             
         }
     },
     // 保存存档
-    SaveFile: function (index) {
+    SaveFile: function () {
         try {
             let data = fs.readFileSync(AVGEngine.LocalPath() + '/config/file/file-temp.json')
-            fs.writeFile(AVGEngine.LocalPath() + '/config/file/file-' + index + '.json', JSON.stringify(data, null, 4), function (err) {
+            data = JSON.parse(data)
+            let random_str = Math.random().toString(36).substr(2)
+            data.filename = random_str + '.json'
+            fs.writeFile(AVGEngine.LocalPath() + '/config/file/' + data.filename, JSON.stringify(data, null, 4), function (err) {
                 if (err) {
                     if (AVGEngine.Setting.Debug)
                         AVGEngine.Log(err)
                 } else {
                     if (AVGEngine.Setting.Debug)
                         AVGEngine.Log("游戏存档保存成功！")
-                    
+                        AVGEngine.Toast({type:"success",title:"游戏存档保存成功！"})
+                        AVGEngine.GetFiles()
                 }
             })
-            fs.writeFile(AVGEngine.LocalPath() + '/config/file/content/content-' + index + '.txt',AVGEngine.TempContent, function (err) {
+            fs.writeFile(AVGEngine.LocalPath() + '/config/file/content/' + random_str + '.txt',AVGEngine.TempContent, function (err) {
                 if (err) {
                     if (AVGEngine.Setting.Debug)
                         AVGEngine.Log(err)
@@ -268,31 +320,60 @@ var AVGEngine = {
             })
         } catch (e) {
             AVGEngine.Log("保存存档异常！")
+            AVGEngine.Toast({type:"error",title:"保存存档异常！原因未知！请重试！"})
         }
     },
     AutoSave: function(){
-        this.SaveTempFile()
-        this.SaveTempContent()
+        if(!$("#ScenePanel").is(":hidden") && $("#ScenePanel").css("display") != 'none'){
+            this.SaveTempFile()
+            this.SaveTempContent()
+        }
     },
     GetFiles: function () {
+        AVGEngine.Files = []
         fs.readdir(AVGEngine.LocalPath() + "/config/file", function (err, files) {
             if (err) {
-                if (AVGEngine.Setting.Debug)
-                    AVGEngine.Log("获取存档失败！")
+                AVGEngine.Log("获取存档失败！")
                 return
             }
             files.forEach(function (filename) {
                 let filedir = path.join(AVGEngine.LocalPath() + "/config/file", filename)
                 let file_stats = fs.statSync(filedir)
-                if (!file_stats.isDirectory()) {
+                if (!file_stats.isDirectory() &&  filename != 'file-temp.json') {
                     let data = fs.readFileSync(filedir)
                     AVGEngine.Files.push(JSON.parse(data))
                     AVGEngine.Log(JSON.parse(data))
                 }
             })
+            AVGEngine.FilesToUI()
         });
     },
+    FilesToUI:function(){    
+        let html = ""
+        AVGEngine.Files.forEach(function(item, index){
+           html += '<div class="file-item" data-item-index=' + index + ' ><p>' + item.name + '</p><p>' + AVGEngine.Format(item.datetime,"yyyy-MM-dd HH:mm") + '</p></div>' 
+        })
+        html += "<script>$('.file-item').click(function(){$(this).siblings().removeAttr('checked');if($(this).attr('checked')){$(this).removeAttr('checked');}else{$(this).attr('checked','');}})</script>"
+        $("#FilePanel .file-area").html(html)
+    },
+    DeleteFile:function(){
+        $('.file-item[checked]').each(function(item, index){
+            let i = $(this).attr('data-item-index')
+            let data = AVGEngine.Files[parseInt(i)]
+            fs.unlinkSync(AVGEngine.LocalPath() + "/config/file/" + data.filename);
+            AVGEngine.Files.splice(parseInt(index),1)
+            $(this).remove()
+            AVGEngine.Toast({type:"success",title:"游戏存档删除成功！"})
+        })
+    },
+    ContinueFile:function(){
+        let index = $('.file-item[checked]').attr('data-item-index')
+        AVGEngine.Continue(index)
+        AVGEngine.HidePanel('FilePanel')
+    },
     Scenes: {
+        Name:"",
+        Background:"",
         List: [],
         // 当前场景
         CurrentScene: "-",
@@ -306,34 +387,35 @@ var AVGEngine = {
         Change: function (SceneName, animation,callback) {
             AVGEngine.Scenes.CurrentSceneList = []
             AVGEngine.Scenes.Current = 0
-            $('#ScenePanel').show()
+            AVGEngine.ShowPanel('ScenePanel')
+            $('#' +SceneName).remove();
             $('#ScenePanel').append("<div id='" + SceneName + "' class='scene " 
-            + animation + "'></div><script>$('#"+SceneName+"').show(100,function(){AVGEngine.Scenes.LoadList(AVGEngine.Scenes.GetSceneByName('" + SceneName + "'),0,"+
-            callback +")});</script>")
-            
-            let PreScene = this.CurrentScene
+            + animation + "' ><script>$('#"+SceneName+"').show(100,function(){AVGEngine.Scenes.LoadList(AVGEngine.Scenes.GetSceneByName('" + SceneName + "'),0,"+
+            callback +");$('.scene').not('#" + SceneName + "').remove();});</script></div>")
+            // let PreScene = this.CurrentScene
             this.CurrentScene = SceneName
-            if ($("#" + PreScene).length != 0 && PreScene != SceneName ) {
-                $("#" + PreScene).hide(500, function () {
-                    $("#" + PreScene).remove()
-                })
-            }
+            // if ($("#" + PreScene).length != 0 && PreScene != SceneName ) {
+            //     $("#" + PreScene).hide(500, function () {
+                    
+            //     })
+            // }
             
         },
         GetSceneByName: function (SceneName) {
-            let path = './scenes/' + SceneName.replace("-", "/") + ".scene.html";
-            let scene = fs.readFileSync(path)
+            let path_str = path.join(__dirname,'./scenes/' + SceneName.replace("-", "/") + ".scene.html");
+            let scene = fs.readFileSync(path_str)
             return scene.toString();
         },
         LoadList:function(Scene,current,callback){
-            
+            AVGEngine.Scenes.Name =  $(Scene).attr('name')
+            AVGEngine.Scenes.Background = $(Scene).attr('background')
             $(Scene).children().each(function(){
                 let obj = {
                     type:$(this)[0].tagName,
                     name:$(this).attr('name'),
                     style:$(this).attr('style'),
-                    before_script:$(this).attr('before-script'),
-                    after_script:$(this).attr('after-script'),
+                    before_script:$(this).attr('b-s'),
+                    after_script:$(this).attr('a-s'),
                     text:$(this).html(),
                     that:$(this)
                 }
@@ -345,6 +427,30 @@ var AVGEngine = {
             }else{
                 AVGEngine.Next()
             }
+        },
+        ChangeBackground:function(background){
+            background = "./scenes/images/background/" + background
+            if($("#ScenePanelBG1").css("z-index") > $("#ScenePanelBG2").css("z-index")){
+                $("#ScenePanelBG2").attr('src',background)
+                $("#ScenePanelBG1").fadeOut(500, function() {
+                    $("#ScenePanelBG1").css("z-index",98)
+                });
+                $("#ScenePanelBG2").fadeIn(1000, function() {
+                })
+            }else{
+                $("#ScenePanelBG1").attr('src',background)
+                $("#ScenePanelBG2").fadeOut(500, function() {
+                    $("#ScenePanelBG1").css("z-index",99)
+                });
+                $("#ScenePanelBG1").fadeIn(1000, function() {
+                })
+            }
+            
+        },
+        DeleteActor:function(id){
+            $("#"+id).fadeOut(500,function(){
+                $(this).remove()
+            })
         }
     },
     // 点击事件
@@ -352,59 +458,92 @@ var AVGEngine = {
         if(!AVGEngine.NextFlag){
             return
         }
+        if(AVGEngine.Scenes.Current == 0){
+            AVGEngine.Scenes.ChangeBackground(AVGEngine.Scenes.Background)
+            // $('#' + AVGEngine.Scenes.CurrentScene).css('background-image','url(' + AVGEngine.Scenes.Background + ')')
+        }
         AVGEngine.NextFlag = false;
         // 判断事件 文字下一句
-        if (AVGEngine.Setting.Debug)
-            AVGEngine.Log('Next!');
+        AVGEngine.Log('Next!');
         // 文字弹出，弹出完整之后再执行 Next()
         if( AVGEngine.Scenes.Current >= AVGEngine.Scenes.CurrentSceneList.length){
+            AVGEngine.NextFlag = true
             return
         }
         let curr = AVGEngine.Scenes.CurrentSceneList[AVGEngine.Scenes.Current]
+        if(curr == undefined){
+            AVGEngine.NextFlag = true
+            AVGEngine.Log('本章已经结束，请检查代码是否无误！');
+            return 
+        }
+        AVGEngine.Scenes.Current++;
         switch (curr.type){
             case "P":
                 $("#SceneDialog").show();
-                if(curr.before_script != undefined){
-                    eval(curr.before_script);
+                if(curr.before_script != undefined && curr.before_script != ""){
+                    try{eval(curr.before_script)}catch(e){AVGEngine.Log(e)}
                 }
-                $("#ActorDialog > p:eq(0)").html(curr.name)
+                $("#NameDialog").html(curr.name)
                 // 执行
                 AVGEngine.TextAuto(curr.text,function(){
-                    if(curr.after_script != undefined){
-                        eval(curr.after_script);
+                    if(curr.after_script != undefined && curr.after_script != ""){
+                        try{eval(curr.after_script)}catch(e){AVGEngine.Log(e)}
                     }
                     AVGEngine.NextFlag = true;
                 })
                 // 保存
-                AVGEngine.TempContent = AVGEngine.TempContent + curr.name + "\r\n" + curr.text + "\r\n"
+                AVGEngine.TempContent = AVGEngine.TempContent + curr.name + ":" + curr.text + "\r\n"
                 break;
             case "IMG":
-                if(curr.before_script != undefined){
-                    eval(curr.before_script);
+                if(curr.before_script != undefined && curr.before_script != ""){
+                    try{eval(curr.before_script)}catch(e){AVGEngine.Log(e)}
                 }
                 let img = curr.that
                 img.attr("id",curr.name)
-                $('#'+ AVGEngine.Scenes.CurrentScene).append(img)
-                if(curr.after_script != undefined){
-                    eval(curr.after_script);
+                if($("#" + curr.name).length > 0){
+                    $("#" + curr.name).fadeOut(500,function(){
+                        $(this).remove()
+                        $('#'+ AVGEngine.Scenes.CurrentScene).append(img)
+                    })
+                }else{
+                    $('#'+ AVGEngine.Scenes.CurrentScene).append(img)
+                }
+                if(curr.after_script != undefined && curr.after_script != ""){
+                    try{eval(curr.after_script)}catch(e){AVGEngine.Log(e)}
                 }
                 AVGEngine.NextFlag = true;
                 break;
             case "DIV":
-                if(curr.before_script != undefined){
-                    eval(curr.before_script);
+                if(curr.before_script != undefined && curr.before_script != ""){
+                    try{eval(curr.before_script)}catch(e){AVGEngine.Log(e)}
                 }
                 let div = curr.that
                 AVGEngine.ShowPanel('ChooseDialogPanel')
                 $('#ChooseDialogPanel').html(div)
-                $('#ChooseDialogPanel button').click(function(){AVGEngine.HidePanel('ChooseDialogPanel')})
-                if(curr.after_script != undefined){
-                    eval(curr.after_script);
+                $('#ChooseDialogPanel button').click(function(){
+                    AVGEngine.HidePanel('ChooseDialogPanel') 
+                    AVGEngine.NextFlag = true
+                })
+                if(curr.after_script != undefined && curr.after_script != ""){
+                    try{eval(curr.after_script)}catch(e){AVGEngine.Log(e)}
                 }
-                AVGEngine.NextFlag = true;
+                break;
+            case "ASIDE":
+                if(curr.before_script != undefined && curr.before_script != ""){
+                    try{eval(curr.before_script)}catch(e){AVGEngine.Log(e)}
+                }
+                let text = curr.text
+                AVGEngine.ShowPanel('AsidePanel')
+                $('#AsidePanel').html("<span>" + text + "</span>")
+                if(curr.after_script != undefined && curr.after_script != ""){
+                    try{eval(curr.after_script)}catch(e){AVGEngine.Log(e)}
+                }
+                break;
+            default:
+                AVGEngine.NextFlag = true
                 break;
         }
-        AVGEngine.Scenes.Current++;
+        
     },
     Skip: function (index) {
         AVGEngine.Scenes.Current = index
@@ -427,12 +566,12 @@ var AVGEngine = {
             }
             //console.log(["0到index下标下的字符",str.substring(0, index)],["符号",index & 1 ? '_': '']);
             //substring() 方法用于提取字符串中介于两个指定下标之间的字符
-            $("#ActorDialog > p:eq(1)").html(str.substring(0, index) + (index & 1 ? '_' : ''));
+            $("#ActorDialog > p:eq(1)").html(str.substring(0, index) +  '&nbsp;&nbsp;❤');
             if (index >= str.length) {
                 clearInterval(timer);
                 callback();
             }
-        },AVGEngine.Setting.AutoSpeed);
+        },100-AVGEngine.Setting.AutoSpeed);
     },
     // 播放背景音乐
     BGM: {
@@ -443,7 +582,7 @@ var AVGEngine = {
         },
         Play: function () {
             if (!AVGEngine.Setting.BGM) { return }
-            if ($(AVGEngine.BGM.That) == null || $(AVGEngine.BGM.That) == undefined) {
+            if ($(AVGEngine.BGM.That).length <= 0) {
                 AVGEngine.BGM.Init()
             }
             AVGEngine.BGM.SetVolumn(AVGEngine.Setting.BGMVolume)
@@ -469,15 +608,15 @@ var AVGEngine = {
     Sound: {
         That: '#avgengine_sound',
         Init: function () {
-            $('body').append('<audio id="avgengine_sound"  style="height:0px"></audio>')
+            $('body').append('<audio id="avgengine_sound" src="' + AVGEngine.BGM.Music() + '"  style="height:0px"></audio>')
         },
         Play: function (soundName) {
-            $(AVGEngine.Sound.That)[0].pause()
             if (!AVGEngine.Setting.Sound) { return }
-            if ($(AVGEngine.Sound.That) == null || $(AVGEngine.Sound.That) == undefined) {
+            if ($(AVGEngine.Sound.That).length <=0) {
                 AVGEngine.Sound.Init()
             }
-            $(AVGEngine.Sound.That).attr('src', "./sound/" + audioName)
+            $(AVGEngine.Sound.That)[0].pause()
+            $(AVGEngine.Sound.That).attr('src', "./sound/" + soundName)
             $(AVGEngine.Sound.That)[0].play()
         }
     },
@@ -485,6 +624,13 @@ var AVGEngine = {
         if (this.Setting.Debug) {
             console.log(msg)
         }
+        
+    },
+    Toast:function(obj){
+        Toast(obj)
+    },
+    OpenWebsite:function(url){
+        ipcRenderer.send("open-website",url)
     },
     // 关闭主窗口
     Quit: function () {
@@ -542,5 +688,158 @@ var AVGEngine = {
             })
         }
 
+    },
+    FullScreen:function(){
+        ipcRenderer.send("full-screen")
+    },
+    Format:function(now,mask)
+    {
+        var d = new Date(now);
+        var zeroize = function (value, length)
+        {
+            if (!length) length = 2;
+            value = String(value);
+            for (var i = 0, zeros = ''; i < (length - value.length); i++)
+            {
+                zeros += '0';
+            }
+            return zeros + value;
+        };
+     
+        return mask.replace(/"[^"]*"|'[^']*'|\b(?:d{1,4}|m{1,4}|yy(?:yy)?|([hHMstT])\1?|[lLZ])\b/g, function ($0)
+        {
+            switch ($0)
+            {
+                case 'd': return d.getDate();
+                case 'dd': return zeroize(d.getDate());
+                case 'ddd': return ['Sun', 'Mon', 'Tue', 'Wed', 'Thr', 'Fri', 'Sat'][d.getDay()];
+                case 'dddd': return ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][d.getDay()];
+                case 'M': return d.getMonth() + 1;
+                case 'MM': return zeroize(d.getMonth() + 1);
+                case 'MMM': return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()];
+                case 'MMMM': return ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][d.getMonth()];
+                case 'yy': return String(d.getFullYear()).substr(2);
+                case 'yyyy': return d.getFullYear();
+                case 'h': return d.getHours() % 12 || 12;
+                case 'hh': return zeroize(d.getHours() % 12 || 12);
+                case 'H': return d.getHours();
+                case 'HH': return zeroize(d.getHours());
+                case 'm': return d.getMinutes();
+                case 'mm': return zeroize(d.getMinutes());
+                case 's': return d.getSeconds();
+                case 'ss': return zeroize(d.getSeconds());
+                case 'l': return zeroize(d.getMilliseconds(), 3);
+                case 'L': var m = d.getMilliseconds();
+                    if (m > 99) m = Math.round(m / 10);
+                    return zeroize(m);
+                case 'tt': return d.getHours() < 12 ? 'am' : 'pm';
+                case 'TT': return d.getHours() < 12 ? 'AM' : 'PM';
+                case 'Z': return d.toUTCString().match(/[A-Z]+$/);
+                // Return quoted strings with the surrounding quotes removed
+                default: return $0.substr(1, $0.length - 2);
+            }
+        });
     }
 }
+
+function ExitGame(){
+    swal({
+        title: '确定退出游戏！',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        backdrop: "rgba(0,0,0,0.9)",
+        allowOutsideClick: true
+    }).then(
+        (result) => {
+            if (result.value) {
+                AVGEngine.Quit()
+            } else if (result.dismiss === swal.DismissReason.cancel) {
+
+            }
+        }
+    )
+}
+
+function DeleteFile(){
+    swal({
+        title: '确定要删除选中的存档吗！删除之后不可恢复！',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        backdrop: "rgba(0,0,0,0.9)",
+        allowOutsideClick: true
+    }).then(
+        (result) => {
+            if (result.value) {
+                AVGEngine.DeleteFile()
+            } else if (result.dismiss === swal.DismissReason.cancel) {
+
+            }
+        }
+    )
+}
+function NewGame(){
+    swal({
+        title: '确定要开始新游戏吗？临时游戏状态将会被覆盖！',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        backdrop: "rgba(0,0,0,0.9)",
+        allowOutsideClick: true
+    }).then(
+        (result) => {
+            if (result.value) {
+                AVGEngine.NewGame('Main', '', AVGEngine.Next)
+            } else if (result.dismiss === swal.DismissReason.cancel) {
+
+            }
+        }
+    )
+}
+
+function SaveTempFile(){
+    AVGEngine.SaveTempFile()
+    AVGEngine.Toast({type:"success",title:"临时存档保存成功！"})
+}
+
+
+
+// 添加动画
+function A(id,obj){
+    if(id=="bg"){
+        if($("#ScenePanelBG1").css("z-index") > $("#ScenePanelBG2").css("z-index")){
+            id = "ScenePanelBG1"
+        }else{
+            id = "ScenePanelBG2"
+        }
+    }
+    try{AVGEngine.Animate(id,obj)}catch(e){AVGEngine.Log(e)}
+    
+}
+// 切换背景
+function B(filename){
+    AVGEngine.Scenes.ChangeBackground(filename)
+}
+// 切换图片
+function C(id,path){
+    $("#"+id).attr("src",path)
+}
+// 删除标签
+function D(id){
+   AVGEngine.Scenes.DeleteActor(id)
+}
+// 播放音效
+function P(audio){
+    AVGEngine.Sound.Play(audio)
+}
+function M(music){
+    AVGEngine.BGM.Change(music)
+}
+function T(scene){
+    AVGEngine.Scenes.Change(scene)
+}
+

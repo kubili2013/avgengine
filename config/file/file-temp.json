@@ -1,7 +1,8 @@
 {
-    "datetime": 1542160403540,
-    "index": 5,
-    "sence": "Test",
-    "custom": {},
-    "content": "<div id=\"Test\" class=\"scene undefined\" style=\"display: block;\"><img src=\"./scenes/images/fangxuelu.jpg\" class=\"bg\"><img src=\"./scenes/images/yjsly.png\" class=\"avg-animation-fadein\" style=\"bottom:0px;left:100px;height:100%\"><img src=\"./scenes/images/yjsly.png\" class=\"avg-animation-fadein\" style=\"bottom:0px;left:900px;height:100%\"></div>"
+    "datetime": 1542965535675,
+    "scene": "Main",
+    "index": 4,
+    "name": "开篇目录",
+    "content": "<div id=\"Main\" class=\"scene \" style=\"display: block;\"><img name=\"chiyouniang\" src=\"./scenes/images/actors/cy_niang_01.png\" class=\"avg-animation-bounceinL\" style=\"width:500px;bottom:300px;margin-left:-400px;\" id=\"chiyouniang\"></div>",
+    "custom": {}
 }
