@@ -28,11 +28,11 @@
 +-- AvgEngine-win32-x64.zip -- 一个不用编译的包，解压即可运行
 ```
 
-## index.html
-`index.html` 中已经将大概的结构搭建完整，可以随意引入 `.css` 文件，改变其样式，也可以添加按钮扩展其功能。`index.html` 作为入口界面，已经调用 `AVGEngine.Init();` 初始化引擎，将播放音乐，读取配置文件等，全部准备好。
-
 ## 快速开始
 重新编译和加载依赖在中国将非常耗时耗心力（没有一定的前端基础尽量不要尝试），编译一次的话，有些得不偿失，会面临各式各样的问题，这里提供一个点击即可运行的包 [AvgEngine-V0.9.9-WIN32-X64.zip](https://github.com/kubili2013/avgengine/releases/download/Avgengine/AvgEngine-V0.9.9-WIN32-X64.zip)。将压缩包解压之后，可以进入 `./AvgEngine-win32-x64/resources/app` 进行开发。
+
+## index.html
+`index.html` 中已经将大概的结构搭建完整，可以随意引入 `.css` 文件，改变其样式，也可以添加按钮扩展其功能。`index.html` 作为入口界面，已经调用 `AVGEngine.Init();` 初始化引擎，将播放音乐，读取配置文件等，全部准备好。
 
 ##  `*.scene.html`文件简介
 > 用来书写故事情节，每个场景都有一场戏，场景互相关联构成了一个文字冒险游戏，其本质就是 `html` 文件
