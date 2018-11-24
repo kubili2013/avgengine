@@ -361,7 +361,8 @@ var AVGEngine = {
             let i = $(this).attr('data-item-index')
             let data = AVGEngine.Files[parseInt(i)]
             fs.unlinkSync(AVGEngine.LocalPath() + "/config/file/" + data.filename);
-            AVGEngine.Files.splice(parseInt(index),1)
+            AVGEngine.Files.splice(parseInt(i),1)
+            AVGEngine.FilesToUI()
             $(this).remove()
             AVGEngine.Toast({type:"success",title:"游戏存档删除成功！"})
         })

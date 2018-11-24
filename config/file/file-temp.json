@@ -1,8 +1,5 @@
 {
-    "datetime": 1542965535675,
+    "datetime": 1543047884786,
     "scene": "Main",
-    "index": 4,
-    "name": "开篇目录",
-    "content": "<div id=\"Main\" class=\"scene \" style=\"display: block;\"><img name=\"chiyouniang\" src=\"./scenes/images/actors/cy_niang_01.png\" class=\"avg-animation-bounceinL\" style=\"width:500px;bottom:300px;margin-left:-400px;\" id=\"chiyouniang\"></div>",
-    "custom": {}
+    "index": 14
 }
