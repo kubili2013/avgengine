@@ -369,6 +369,7 @@ var AVGEngine = {
             let i = $(this).attr('data-item-index')
             let data = AVGEngine.Files[parseInt(i)]
             fs.unlinkSync(AVGEngine.LocalPath() + "/config/file/" + data.filename);
+            fs.unlinkSync(AVGEngine.LocalPath() + "/config/file/content/" + data.filename.replace(".json",".txt"));
             AVGEngine.Files.splice(parseInt(i),1)
             AVGEngine.FilesToUI()
             $(this).remove()

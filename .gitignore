@@ -1,5 +1,5 @@
 node_modules
 .vscode
 .git
-config/*.json
-config/content/*
+config/file/*.json
+config/file/content/*
