@@ -1,0 +1,10 @@
+{
+    "datetime": 1543049090245,
+    "scene": "Main",
+    "background": "./scenes/images/background/bg-hong.jpg",
+    "index": 1,
+    "name": "开篇目录",
+    "custom": {},
+    "content": "<div id=\"Main\" class=\"scene \" style=\"display: block;\"></div>",
+    "filename": "9ptj3ykyedm.json"
+}

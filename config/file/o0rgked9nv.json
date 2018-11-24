@@ -1,0 +1,10 @@
+{
+    "datetime": 1543049110267,
+    "scene": "Main",
+    "background": "./scenes/images/background/bg-hong.jpg",
+    "index": 9,
+    "name": "开篇目录",
+    "custom": {},
+    "content": "<div id=\"Main\" class=\"scene \" style=\"display: block;\"><img name=\"chiyouniang\" src=\"./scenes/images/actors/cy_niang_01.png\" class=\"avg-animation-bounceinL\" style=\"width:500px;bottom:300px;margin-left:-400px;\" id=\"chiyouniang\"><img name=\"tushi\" src=\"./scenes/images/actors/wenjianmulu.png\" class=\"avg-animation-bounceinR\" style=\"width:500px;top:200px;\" id=\"tushi\"></div>",
+    "filename": "o0rgked9nv.json"
+}

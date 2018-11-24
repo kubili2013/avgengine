@@ -210,11 +210,14 @@ var AVGEngine = {
             AVGEngine.Scenes.CurrentScene = file.scene
             AVGEngine.Scenes.Current = file.index - 1
             AVGEngine.Scenes.Name = file.name
+            AVGEngine.Scenes.Background = file.background
             AVGEngine.Custom = file.custom
             AVGEngine.ShowPanel('ScenePanel')
             $('#ScenePanel').append(file.content + "<script>$('#" + AVGEngine.Scenes.CurrentScene + "').show(100,function(){AVGEngine.Scenes.LoadList(AVGEngine.Scenes.GetSceneByName('" 
             + AVGEngine.Scenes.CurrentScene + "'),"
-            + AVGEngine.Scenes.Current + ",AVGEngine.Next)});</script>")
+            + AVGEngine.Scenes.Current + ",AVGEngine.Next)});"
+            + "AVGEngine.Scenes.ChangeBackground('" + file.background + "');"
+            + "</script>")
             // AVGEngine.Scenes.Change(file.scene,"","AVGEngine.Next")
         } catch (e) {
             AVGEngine.Log(e)
@@ -260,9 +263,10 @@ var AVGEngine = {
             data.datetime = (new Date()).valueOf()
             data.name = AVGEngine.Scenes.Name
             data.scene = AVGEngine.Scenes.CurrentScene
+            file.background = AVGEngine.Scenes.Background
             data.index = AVGEngine.Scenes.Current
             data.content = $("#" + AVGEngine.Scenes.CurrentScene).prop("outerHTML")
-            data.content = data.content.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi , "");
+            data.content = data.content;
             data.custom = AVGEngine.Custom
             fs.writeFile(AVGEngine.LocalPath() + '/config/file/file-temp.json', JSON.stringify(data, null, 4), function (err) {
                 if (err) {
@@ -277,7 +281,11 @@ var AVGEngine = {
             let file = {
                 datetime:(new Date()).valueOf(),
                 scene:AVGEngine.Scenes.CurrentScene,
-                index:AVGEngine.Scenes.Current
+                background:AVGEngine.Scenes.Background,
+                index:AVGEngine.Scenes.Current,
+                name:AVGEngine.Scenes.Name,
+                custom: AVGEngine.Custom,
+                content: $("#" + AVGEngine.Scenes.CurrentScene).prop("outerHTML").replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi , "")
             }
             fs.writeFile(AVGEngine.LocalPath() + '/config/file/file-temp.json', JSON.stringify(file, null, 4), function (err) {
                 if (err) {
@@ -430,7 +438,9 @@ var AVGEngine = {
             }
         },
         ChangeBackground:function(background){
-            background = "./scenes/images/background/" + background
+            if(background.indexOf("scenes/images/background/") < 0 ){
+                background = "./scenes/images/background/" + background
+            }
             if($("#ScenePanelBG1").css("z-index") > $("#ScenePanelBG2").css("z-index")){
                 $("#ScenePanelBG2").attr('src',background)
                 $("#ScenePanelBG1").fadeOut(500, function() {
@@ -446,7 +456,7 @@ var AVGEngine = {
                 $("#ScenePanelBG1").fadeIn(1000, function() {
                 })
             }
-            
+            AVGEngine.Scenes.Background = background
         },
         DeleteActor:function(id){
             $("#"+id).fadeOut(500,function(){
