@@ -368,8 +368,8 @@ var AVGEngine = {
         $('.file-item[checked]').each(function(item, index){
             let i = $(this).attr('data-item-index')
             let data = AVGEngine.Files[parseInt(i)]
-            fs.unlinkSync(AVGEngine.LocalPath() + "/config/file/" + data.filename);
-            fs.unlinkSync(AVGEngine.LocalPath() + "/config/file/content/" + data.filename.replace(".json",".txt"));
+            try{fs.unlinkSync(AVGEngine.LocalPath() + "/config/file/" + data.filename)}catch(e){AVGEngine.Log(e)}
+            try{fs.unlinkSync(AVGEngine.LocalPath() + "/config/file/content/" + data.filename.replace(".json",".txt"))}catch(e){AVGEngine.Log(e)}
             AVGEngine.Files.splice(parseInt(i),1)
             AVGEngine.FilesToUI()
             $(this).remove()
