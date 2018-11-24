@@ -106,9 +106,9 @@
 1. 设置背景音乐音量 `AVGEngine.Setting.BGMVolume = 50`，取值范围 0-100 
 1. 设置音效音乐音量 `AVGEngine.Setting.SoundVolume = 50`，取值范围 0-100 
 1. 播放背景音乐 `AVGEngine.BGM.Play('音效音乐名称.mp3')`
-1. 播放音效 `AVGEngine.Sound.Play('音效音乐名称.mp3')`，在 `bgm` 文件夹下的文件，支持 `mp3`,`wav`,`ogg`
-1. 切换背景音乐`AVGEngine.BGM.Change('背景音乐名称.mp3')`，在 `sound` 文件夹下的文件，支持 `mp3`,`wav`,`ogg`
-1. 暂停背景音乐`AVGEngine.BGM.Pause()`，在 `sound` 文件夹下的文件，支持 `mp3`,`wav`,`ogg`
+1. 播放音效 `AVGEngine.Sound.Play('音效音乐名称.mp3')`，在 `sound` 文件夹下的文件，支持 `mp3`,`wav`,`ogg`
+1. 切换背景音乐`AVGEngine.BGM.Change('背景音乐名称.mp3')`，在 `bgm` 文件夹下的文件，支持 `mp3`,`wav`,`ogg`
+1. 暂停背景音乐`AVGEngine.BGM.Pause()`，在 `bgm` 文件夹下的文件，支持 `mp3`,`wav`,`ogg`
 
 > 注意，音效和背景音乐不要混用，音效适合简短的音频。
 ## 动画相关
