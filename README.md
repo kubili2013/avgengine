@@ -1,6 +1,6 @@
 # AVGEngine 使用手册
 
-> 使用 Eletron 开发的桌面程序，能用 Html + Css + Js 快速开发文字冒险类的游戏。注重灵活性，扩展性，实用性。
+> 使用 Electron 开发的桌面程序，能用 Html + Css + Js 快速开发文字冒险类的游戏。注重灵活性，扩展性，实用性。
 
 ## 文件夹结构
 
@@ -91,7 +91,7 @@
     "AutoPlay": false,
     // 文字自动弹出速度
     "AutoSpeed": "20",
-    // 开发者状态 设置为 true 自动开启 eletron 开发者模式
+    // 开发者状态 设置为 true 自动开启 electron 开发者模式
     "Develop": false,
     // 调试状态 为 true 会在控制台输出日志
     "Debug": true,
@@ -202,12 +202,12 @@ T("1_1")
 ```
 npm run asar
 ```
-2. 运行完成后，会在工程根目录下产生一个 `app.asar` 文件，将这个文件塞入`eletron` 编译好的工程根目录 `./resource` 文件夹下，就可以运行。
+2. 运行完成后，会在工程根目录下产生一个 `app.asar` 文件，将这个文件塞入`electron` 编译好的工程根目录 `./resource` 文件夹下，就可以运行。
 
 ## 依赖项目
 
 * [jquery@3.3.1](https://github.com/jquery/jquery)
-* [eletron@^2.0.0](https://electronjs.org/)
+* [electron@^2.0.0](https://electronjs.org/)
 * [greenwork](https://github.com/greenheartgames/greenworks)
 * [sweetalert2]()
 
